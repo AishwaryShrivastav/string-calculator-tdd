@@ -84,4 +84,15 @@ describe("String Calculator", () => {
     expect(add("//[sep]\n1sep2sep3")).toBe(6);
     expect(add("//[***]\n1***2***1001***4")).toBe(7);  // Testing with number > 1000
   });
+
+  /**
+   * Multiple delimiters case: Tests support for multiple different delimiters
+   */
+  test("supports multiple delimiters", () => {
+    expect(add("//[*][%]\n1*2%3")).toBe(6);
+    expect(add("//[###][!!!][,,,]\n1###2!!!3,,,4")).toBe(10);
+    expect(add("//[*][!!][rrr]\n1*2!!3rrr4")).toBe(10);
+    expect(add("//[*][%]\n1*2%1001*3")).toBe(6);  // Testing with number > 1000
+    expect(add("//[++][--]\n1++2--3--4++5")).toBe(15);
+  });
 });

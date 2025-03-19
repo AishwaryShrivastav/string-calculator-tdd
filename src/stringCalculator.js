@@ -7,6 +7,7 @@
  *                          - Custom delimiter can be specified using //[delimiter]\n format
  *                            Example: "//;\n1;2" uses semicolon as delimiter
  *                            Example: "//[***]\n1***2***3" uses *** as delimiter
+ *                            Example: "//[*][%]\n1*2%3" uses both * and % as delimiters
  *                          - Numbers bigger than 1000 are ignored in the sum
  * @throws {Error} If negative numbers are found in the input
  * @returns {number} The sum of all numbers in the input string
@@ -17,6 +18,7 @@
  * add("1\n2,3")         // returns 6 (mixed delimiters)
  * add("//;\n1;2")       // returns 3 (custom delimiter)
  * add("//[***]\n1***2") // returns 3 (multi-char delimiter)
+ * add("//[*][%]\n1*2%3")// returns 6 (multiple delimiters)
  * add("2,1001")         // returns 2 (numbers > 1000 are ignored)
  */
 function add(numbers) {
@@ -30,16 +32,41 @@ function add(numbers) {
     if (numbers.startsWith("//")) {
         const customDelimiterIndex = numbers.indexOf("\n");
         if (customDelimiterIndex !== -1) {
-            // Extract custom delimiter and remaining numbers
-            let customDelimiter = numbers.substring(2, customDelimiterIndex);
-            
-            // Handle multi-character delimiter in square brackets
-            if (customDelimiter.startsWith("[") && customDelimiter.endsWith("]")) {
-                customDelimiter = customDelimiter.slice(1, -1); // Remove brackets
-            }
-            
+            // Extract custom delimiter section and remaining numbers
+            const delimiterSection = numbers.substring(2, customDelimiterIndex);
             numbersToProcess = numbers.substring(customDelimiterIndex + 1);
-            delimiter = new RegExp(escapeRegExp(customDelimiter));
+            
+            if (delimiterSection.startsWith("[") && delimiterSection.endsWith("]")) {
+                // Handle multiple delimiters
+                const delimiters = [];
+                let currentDelimiter = "";
+                let bracketCount = 0;
+                
+                // Parse all delimiters between brackets
+                for (let char of delimiterSection) {
+                    if (char === "[") {
+                        bracketCount++;
+                        if (bracketCount === 1) continue; // Skip opening bracket
+                    } else if (char === "]") {
+                        bracketCount--;
+                        if (bracketCount === 0) {
+                            delimiters.push(currentDelimiter);
+                            currentDelimiter = "";
+                            continue;
+                        }
+                    }
+                    if (bracketCount > 0) {
+                        currentDelimiter += char;
+                    }
+                }
+                
+                // Create regex pattern for all delimiters
+                const escapedDelimiters = delimiters.map(d => escapeRegExp(d));
+                delimiter = new RegExp(escapedDelimiters.join("|"));
+            } else {
+                // Handle single delimiter without brackets
+                delimiter = new RegExp(escapeRegExp(delimiterSection));
+            }
         }
     }
 
