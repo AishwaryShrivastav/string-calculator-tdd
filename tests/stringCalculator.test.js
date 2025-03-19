@@ -49,3 +49,15 @@ test("returns the sum of multiple numbers", () => {
 test("handles new lines between numbers", () => {
     expect(add("1\n2,3")).toBe(6);
 });
+
+/**
+ * Custom delimiter case: Tests support for user-defined delimiters
+ * Verifies that the calculator can handle a custom delimiter specified 
+ * in the format "//[delimiter]\n[numbers]". In this case, testing
+ * semicolon as a custom delimiter.
+ * 
+ * Example input: "//;\n1;2" uses semicolon as delimiter for numbers 1,2
+ */
+test("supports custom delimiters", () => {
+    expect(add("//;\n1;2")).toBe(3);
+});
