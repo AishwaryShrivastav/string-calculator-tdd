@@ -6,16 +6,18 @@
  *                          - Numbers can be separated by commas (,) or newlines (\n)
  *                          - Custom delimiter can be specified using //[delimiter]\n format
  *                            Example: "//;\n1;2" uses semicolon as delimiter
+ *                            Example: "//[***]\n1***2***3" uses *** as delimiter
  *                          - Numbers bigger than 1000 are ignored in the sum
  * @throws {Error} If negative numbers are found in the input
  * @returns {number} The sum of all numbers in the input string
  * 
  * @example
- * add("1,2,3")     // returns 6
- * add("")          // returns 0 
- * add("1\n2,3")    // returns 6 (mixed delimiters)
- * add("//;\n1;2")  // returns 3 (custom delimiter)
- * add("2,1001")    // returns 2 (numbers > 1000 are ignored)
+ * add("1,2,3")           // returns 6
+ * add("")                // returns 0 
+ * add("1\n2,3")         // returns 6 (mixed delimiters)
+ * add("//;\n1;2")       // returns 3 (custom delimiter)
+ * add("//[***]\n1***2") // returns 3 (multi-char delimiter)
+ * add("2,1001")         // returns 2 (numbers > 1000 are ignored)
  */
 function add(numbers) {
     // Handle empty string case
@@ -29,7 +31,13 @@ function add(numbers) {
         const customDelimiterIndex = numbers.indexOf("\n");
         if (customDelimiterIndex !== -1) {
             // Extract custom delimiter and remaining numbers
-            const customDelimiter = numbers.substring(2, customDelimiterIndex);
+            let customDelimiter = numbers.substring(2, customDelimiterIndex);
+            
+            // Handle multi-character delimiter in square brackets
+            if (customDelimiter.startsWith("[") && customDelimiter.endsWith("]")) {
+                customDelimiter = customDelimiter.slice(1, -1); // Remove brackets
+            }
+            
             numbersToProcess = numbers.substring(customDelimiterIndex + 1);
             delimiter = new RegExp(escapeRegExp(customDelimiter));
         }

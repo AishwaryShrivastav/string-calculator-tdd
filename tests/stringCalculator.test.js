@@ -73,4 +73,15 @@ describe("String Calculator", () => {
     expect(add("1,999,1000,1001,2000")).toBe(2000);
     expect(add("//;\n1;1001;2")).toBe(3);
   });
+
+  /**
+   * Multi-character delimiter case: Tests support for delimiters of any length
+   */
+  test("supports multi-character delimiters", () => {
+    expect(add("//[***]\n1***2***3")).toBe(6);
+    expect(add("//[===]\n1===2===3")).toBe(6);
+    expect(add("//[....]\n1....2....3")).toBe(6);
+    expect(add("//[sep]\n1sep2sep3")).toBe(6);
+    expect(add("//[***]\n1***2***1001***4")).toBe(7);  // Testing with number > 1000
+  });
 });
