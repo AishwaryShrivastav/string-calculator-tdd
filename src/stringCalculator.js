@@ -6,6 +6,7 @@
  *                          - Numbers can be separated by commas (,) or newlines (\n)
  *                          - Custom delimiter can be specified using //[delimiter]\n format
  *                            Example: "//;\n1;2" uses semicolon as delimiter
+ *                          - Numbers bigger than 1000 are ignored in the sum
  * @throws {Error} If negative numbers are found in the input
  * @returns {number} The sum of all numbers in the input string
  * 
@@ -14,6 +15,7 @@
  * add("")          // returns 0 
  * add("1\n2,3")    // returns 6 (mixed delimiters)
  * add("//;\n1;2")  // returns 3 (custom delimiter)
+ * add("2,1001")    // returns 2 (numbers > 1000 are ignored)
  */
 function add(numbers) {
     // Handle empty string case
@@ -45,8 +47,10 @@ function add(numbers) {
         throw new Error(`Negative numbers not allowed: ${negativeNumbers.join(", ")}`);
     }
 
-    // Calculate sum
-    return numberList.reduce((sum, num) => sum + num, 0);
+    // Filter out numbers greater than 1000 and calculate sum
+    return numberList
+        .filter(num => num <= 1000)  // Ignore numbers greater than 1000
+        .reduce((sum, num) => sum + num, 0);
 }
 
 /**

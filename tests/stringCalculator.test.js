@@ -64,4 +64,13 @@ describe("String Calculator", () => {
     expect(() => add("-1,-2,3")).toThrow("Negative numbers not allowed: -1, -2");
     expect(() => add("//;\n1;-2;-3")).toThrow("Negative numbers not allowed: -2, -3");
   });
+  /**
+   * Large number case: Tests that numbers bigger than 1000 are ignored
+   */
+  test("ignores numbers bigger than 1000", () => {
+    expect(add("2,1001")).toBe(2);
+    expect(add("1000,1001,2")).toBe(1002);
+    expect(add("1,999,1000,1001,2000")).toBe(2000);
+    expect(add("//;\n1;1001;2")).toBe(3);
+  });
 });
