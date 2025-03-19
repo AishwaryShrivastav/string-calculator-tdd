@@ -37,3 +37,15 @@ test("returns the sum of two numbers", () => {
 test("returns the sum of multiple numbers", () => {
     expect(add("1,2,3,4")).toBe(10);
 });
+
+/**
+ * Mixed delimiter case: Tests handling of newline characters
+ * Verifies that the calculator can handle both commas and newlines
+ * as valid delimiters between numbers. This ensures flexibility
+ * in input format and maintains backward compatibility with
+ * existing comma-separated inputs.
+ */
+
+test("handles new lines between numbers", () => {
+    expect(add("1\n2,3")).toBe(6);
+});
