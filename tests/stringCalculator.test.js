@@ -61,3 +61,14 @@ test("handles new lines between numbers", () => {
 test("supports custom delimiters", () => {
     expect(add("//;\n1;2")).toBe(3);
 });
+
+/**
+ * Negative number case: Tests error handling for negative inputs
+ * Verifies that the calculator throws an exception when negative numbers
+ * are provided in the input string, with the error message including
+ * the specific negative values found. This enforces the business rule
+ * that negative numbers are not allowed in calculations.
+ */
+test("throws an exception for negative numbers", () => {
+    expect(() => add("1,-2,3")).toThrow("Negative numbers not allowed: -2");
+});
