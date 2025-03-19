@@ -1,74 +1,67 @@
 /**
  * Test suite for the string calculator function.
- * The calculator takes a string input of comma-separated numbers
+ * The calculator takes a string input of numbers with various delimiters
  * and returns their sum. It handles various input cases including
- * empty strings, single numbers, and multiple numbers.
+ * empty strings, single numbers, multiple numbers, and custom delimiters.
  */
 const add = require("../src/stringCalculator");
 
-/**
- * Base case: Empty string should return 0
- * This is the simplest case for the calculator
- */
-test("returns 0 for an empty string", () => {
+describe("String Calculator", () => {
+  /**
+   * Base case: Empty string should return 0
+   */
+  test("returns 0 for an empty string", () => {
     expect(add("")).toBe(0);
-});
+  });
 
-/**
- * Single number case: String with one number should return that number
- * Tests the parsing of a single number from string to integer
- */
-test("returns the number itself when a single number is passed", () => {
+  /**
+   * Single number case: String with one number should return that number
+   */
+  test("returns the number itself when a single number is passed", () => {
     expect(add("1")).toBe(1);
-});
+    expect(add("42")).toBe(42);
+  });
 
-/**
- * Two number case: Tests basic addition functionality
- * Verifies that the calculator can split the string and sum two numbers
- */
-test("returns the sum of two numbers", () => {
+  /**
+   * Two number case: Tests basic addition functionality
+   */
+  test("returns the sum of two numbers", () => {
     expect(add("1,2")).toBe(3);
-});
+    expect(add("10,20")).toBe(30);
+  });
 
-/**
- * Multiple number case: Tests addition of several numbers
- * Verifies that the calculator can handle an arbitrary number of inputs
- */
-test("returns the sum of multiple numbers", () => {
+  /**
+   * Multiple number case: Tests addition of several numbers
+   */
+  test("returns the sum of multiple numbers", () => {
     expect(add("1,2,3,4")).toBe(10);
-});
+    expect(add("5,10,15,20")).toBe(50);
+  });
 
-/**
- * Mixed delimiter case: Tests handling of newline characters
- * Verifies that the calculator can handle both commas and newlines
- * as valid delimiters between numbers. This ensures flexibility
- * in input format and maintains backward compatibility with
- * existing comma-separated inputs.
- */
-
-test("handles new lines between numbers", () => {
+  /**
+   * Mixed delimiter case: Tests handling of newline characters
+   */
+  test("handles new lines between numbers as delimiters", () => {
     expect(add("1\n2,3")).toBe(6);
-});
+    expect(add("1,2\n3")).toBe(6);
+    expect(add("1\n2\n3")).toBe(6);
+  });
 
-/**
- * Custom delimiter case: Tests support for user-defined delimiters
- * Verifies that the calculator can handle a custom delimiter specified 
- * in the format "//[delimiter]\n[numbers]". In this case, testing
- * semicolon as a custom delimiter.
- * 
- * Example input: "//;\n1;2" uses semicolon as delimiter for numbers 1,2
- */
-test("supports custom delimiters", () => {
+  /**
+   * Custom delimiter case: Tests support for user-defined delimiters
+   */
+  test("supports custom delimiters", () => {
     expect(add("//;\n1;2")).toBe(3);
-});
+    expect(add("//:\n1:2:3")).toBe(6);
+    expect(add("//$\n1$2$3$4")).toBe(10);
+  });
 
-/**
- * Negative number case: Tests error handling for negative inputs
- * Verifies that the calculator throws an exception when negative numbers
- * are provided in the input string, with the error message including
- * the specific negative values found. This enforces the business rule
- * that negative numbers are not allowed in calculations.
- */
-test("throws an exception for negative numbers", () => {
+  /**
+   * Negative number case: Tests error handling for negative inputs
+   */
+  test("throws an exception for negative numbers", () => {
     expect(() => add("1,-2,3")).toThrow("Negative numbers not allowed: -2");
+    expect(() => add("-1,-2,3")).toThrow("Negative numbers not allowed: -1, -2");
+    expect(() => add("//;\n1;-2;-3")).toThrow("Negative numbers not allowed: -2, -3");
+  });
 });
