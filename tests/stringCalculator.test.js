@@ -95,4 +95,16 @@ describe("String Calculator", () => {
     expect(add("//[*][%]\n1*2%1001*3")).toBe(6);  // Testing with number > 1000
     expect(add("//[++][--]\n1++2--3--4++5")).toBe(15);
   });
+
+  /**
+   * Long multiple delimiters case: Tests support for multiple delimiters with length > 1
+   */
+  test("supports multiple long delimiters", () => {
+    expect(add("//[***][%%%]\n1***2%%%3")).toBe(6);
+    expect(add("//[delim1][delim2]\n1delim12delim23")).toBe(6);
+    expect(add("//[separator][divider]\n1separator2divider3")).toBe(6);
+    expect(add("//[long-delim][short]\n1long-delim2short3")).toBe(6);
+    expect(add("//[***][%%%][###]\n1***2%%%3###4")).toBe(10);
+    expect(add("//[long-delim][short][medium]\n1long-delim2short3medium4")).toBe(10);
+  });
 });

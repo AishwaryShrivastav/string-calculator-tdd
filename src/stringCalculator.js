@@ -8,18 +8,20 @@
  *                            Example: "//;\n1;2" uses semicolon as delimiter
  *                            Example: "//[***]\n1***2***3" uses *** as delimiter
  *                            Example: "//[*][%]\n1*2%3" uses both * and % as delimiters
+ *                            Example: "//[delim1][delim2]\n1delim12delim23" uses multiple long delimiters
  *                          - Numbers bigger than 1000 are ignored in the sum
  * @throws {Error} If negative numbers are found in the input
  * @returns {number} The sum of all numbers in the input string
  * 
  * @example
- * add("1,2,3")           // returns 6
- * add("")                // returns 0 
- * add("1\n2,3")         // returns 6 (mixed delimiters)
- * add("//;\n1;2")       // returns 3 (custom delimiter)
- * add("//[***]\n1***2") // returns 3 (multi-char delimiter)
- * add("//[*][%]\n1*2%3")// returns 6 (multiple delimiters)
- * add("2,1001")         // returns 2 (numbers > 1000 are ignored)
+ * add("1,2,3")                    // returns 6
+ * add("")                         // returns 0 
+ * add("1\n2,3")                  // returns 6 (mixed delimiters)
+ * add("//;\n1;2")                // returns 3 (custom delimiter)
+ * add("//[***]\n1***2")          // returns 3 (multi-char delimiter)
+ * add("//[*][%]\n1*2%3")         // returns 6 (multiple delimiters)
+ * add("//[delim1][delim2]\n1delim12delim23") // returns 6 (long delimiters)
+ * add("2,1001")                  // returns 2 (numbers > 1000 are ignored)
  */
 function add(numbers) {
     // Handle empty string case
@@ -50,8 +52,10 @@ function add(numbers) {
                     } else if (char === "]") {
                         bracketCount--;
                         if (bracketCount === 0) {
-                            delimiters.push(currentDelimiter);
-                            currentDelimiter = "";
+                            if (currentDelimiter) {
+                                delimiters.push(currentDelimiter);
+                                currentDelimiter = "";
+                            }
                             continue;
                         }
                     }
@@ -59,6 +63,9 @@ function add(numbers) {
                         currentDelimiter += char;
                     }
                 }
+                
+                // Sort delimiters by length (longest first) to handle overlapping delimiters
+                delimiters.sort((a, b) => b.length - a.length);
                 
                 // Create regex pattern for all delimiters
                 const escapedDelimiters = delimiters.map(d => escapeRegExp(d));
